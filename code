@@ -1,0 +1,373 @@
+//Abilash-RA2111009010088
+//Kapilashiwaa-RA2111009010087
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <ctype.h>
+//Used macro
+#define MAX_YR  9999
+#define MIN_YR  1900
+#define MAX_SIZE_USER_NAME 30
+#define MAX_SIZE_PASSWORD  20
+#define FILE_NAME  "PassengerRecordSystem.txt"
+// Macro related to the passenger info
+#define MAX_PASSENGER_NAME 50
+#define MAX_PASSENGER_ADDRESS 300
+#define MAX_PASSENGER_MOB_NUM 20
+//structure to store date
+void menu();
+typedef struct
+{
+    int yyyy;
+    int mm;
+    int dd;
+} Date;
+//Elements of structure
+typedef struct// to call in program
+{
+    unsigned int passengerId; // declare the integer data type
+    int passengerSeatNum[20];
+    int total_passengers;
+    Date passengerTravelingDate;// declare the integer data type
+    char passengerName[MAX_PASSENGER_NAME];// declare the character array for the name
+    char passengerMobNum[MAX_PASSENGER_MOB_NUM];// declare the character array for the name
+    char passengerAddr[MAX_PASSENGER_ADDRESS];// declare the character array for the address
+} s_PassengerInfo;
+//Own version of fgetsRemovedNewLine
+void fgetsRemovedNewLine(char * restrict buf, int n,FILE * restrict stream)
+{
+    if (fgets(buf, n, stream) == NULL)
+    {
+        printf("Fail to read the input stream");
+    }
+    else
+    {
+        buf[strcspn(buf, "\n")] = '\0';
+    }
+}
+//Align the message
+void printMessageCenter(const char* message)
+{
+    int len =0;
+    int pos = 0;
+    //calculate how many space need to print
+    len = (78 - strlen(message))/2;
+    printf("\t\t\t");
+    for(pos =0 ; pos < len ; pos++)
+    {
+        //print space
+        printf(" ");
+    }
+    //print message
+    printf("%s",message);
+}
+//Head message
+void headMessage(const char *message)
+{
+    system("cls");
+    printf("\t\t\t###########################################################################");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t############           Bus Ticket Booking System in C          ############");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t###########################################################################");
+    printf("\n\t\t\t----------------------------------------------------------------------------");
+}
+//Display message
+void welcomeMessage()
+{
+    headMessage("www.aticleworld.com");
+    printf("\n\n\n\n\n");
+    printf("\n\t\t\t        =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    printf("\n\t\t\t        =                  WELCOME                  =");
+    printf("\n\t\t\t        =                    TO                     =");
+    printf("\n\t\t\t        =                Bus Ticket                 =");
+    printf("\n\t\t\t        =               Booking  SYSTEM             =");
+    printf("\n\t\t\t        =                                           =");
+    printf("\n\t\t\t        =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    printf("\n\n\n\t\t\t Enter any key to continue.....");
+    getchar();
+    menu();
+}
+//Validate name
+int isNameValid(const char *name)
+{
+    int validName = 1;
+    int len = 0;
+    int index = 0;
+    len = strlen(name);
+    for(index =0; index <len ; ++index)
+    {
+        if(!(isalpha(name[index])) && (name[index] != '\n') && (name[index] != ' '))
+        {
+            validName = 0;
+            break;
+        }
+    }
+    return validName;
+}
+//Validate name
+int isValidMobNumber(const char *name)
+{
+    int validName = 1;
+    int len = 0;
+    int index = 0;
+    len = strlen(name);
+    for(index =0; index <len ; ++index)
+    {
+        if(!(isdigit(name[index])) && (name[index] != '\n') && (name[index] != ' '))
+        {
+            validName = 0;
+            break;
+        }
+    }
+    return validName;
+}
+// Function to check leap year.
+//Function returns 1 if leap year
+int  IsLeapYear(int year)
+{
+    return (((year % 4 == 0) &&
+             (year % 100 != 0)) ||
+            (year % 400 == 0));
+}
+// returns 1 if given date is valid.
+int isValidDate(Date *validDate)
+{
+    //check range of year,month and day
+    if (validDate->yyyy > MAX_YR ||
+            validDate->yyyy < MIN_YR)
+        return 0;
+    if (validDate->mm < 1 || validDate->mm > 12)
+        return 0;
+    if (validDate->dd < 1 || validDate->dd > 31)
+        return 0;
+    //Handle feb days in leap year
+    if (validDate->mm == 2)
+    {
+        if (IsLeapYear(validDate->yyyy))
+            return (validDate->dd <= 29);
+        else
+            return (validDate->dd <= 28);
+    }
+    //handle months which has only 30 days
+    if (validDate->mm == 4 || validDate->mm == 6 ||
+            validDate->mm == 9 || validDate->mm == 11)
+        return (validDate->dd <= 30);
+    return 1;
+}
+// Add passenger in list
+void addPassengerInDataBase()
+{
+    s_PassengerInfo addPassengerInfoInDataBase = {0};
+    FILE *fp = NULL;
+    int status = 0,i;
+    fp = fopen(FILE_NAME,"a+");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+    headMessage("ADD NEW PASSENGER");
+    printf("\n\n\t\t\tENTER YOUR DETAILS BELOW:");
+    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    printf("\n\t\t\tPassenger ID  = ");
+    fflush(stdin);
+    scanf("%u",&addPassengerInfoInDataBase.passengerId);
+    do
+    {
+        printf("\n\t\t\tPassenger Name  = ");
+        fflush(stdin);
+        scanf("%s",addPassengerInfoInDataBase.passengerName);
+        status = isNameValid(addPassengerInfoInDataBase.passengerName);
+        if (!status)
+        {
+            printf("\n\t\t\tName contain invalid character. Please enter again.");
+        }
+    }
+    while(!status);
+    do
+    {
+        printf("\n\t\t\tPassenger Mob: = ");
+        fflush(stdin);
+        scanf("%s",addPassengerInfoInDataBase.passengerMobNum);
+        status = isValidMobNumber(addPassengerInfoInDataBase.passengerMobNum);
+        if (!status)
+        {
+            printf("\n\t\t\tName contain invalid character. Please enter again.");
+        }
+    }
+    while(!status);
+    do
+    {
+        printf("\n\t\t\tPassenger Address  = ");
+        fflush(stdin);
+        scanf("%s",addPassengerInfoInDataBase.passengerAddr);
+        status = isNameValid(addPassengerInfoInDataBase.passengerAddr);
+        if (!status)
+        {
+            printf("\n\t\t\tName contain invalid character. Please enter again.");
+        }
+    }
+    while(!status);
+    printf("\n\t\t\tNumber of Passengers = ");
+    fflush(stdin);
+    scanf("%d",&addPassengerInfoInDataBase.total_passengers);
+    do
+    {
+        printf("\n\t\t\tPassenger Traveling Date:- ");
+        //get date year,month and day from user
+        printf("\n\t\t\tEnter date in format (dd/mm/yyyy): ");
+        scanf("%d/%d/%d",&addPassengerInfoInDataBase.passengerTravelingDate.dd,&addPassengerInfoInDataBase.passengerTravelingDate.mm,&addPassengerInfoInDataBase.passengerTravelingDate.yyyy);
+        //check date validity
+        status = isValidDate(&addPassengerInfoInDataBase.passengerTravelingDate);
+        if (!status)
+        {
+            printf("\n\t\t\tPlease enter a valid date.\n");
+        }
+    }
+    while(!status);
+    unsigned int tempSeatNumber[20] = {0};
+    for(i=0;i<addPassengerInfoInDataBase.total_passengers;i++)
+    {
+        printf("\n\t\t\tSeat number for passenger %d= ",i+1);
+        fflush(stdin);
+        scanf("%u",&tempSeatNumber[i]);
+        addPassengerInfoInDataBase.passengerSeatNum[i] = tempSeatNumber[i];
+    }
+    fwrite(&addPassengerInfoInDataBase,sizeof(addPassengerInfoInDataBase), 1, fp);
+    fclose(fp);
+}
+// search passenger Record
+void searchPassenger()
+{
+    int found = 0,i;
+    int passengerId =0;
+    s_PassengerInfo addPassengerInfoInDataBase = {0};
+    FILE *fp = NULL;
+    fp = fopen(FILE_NAME,"r");
+    if(fp == NULL)
+    {
+        printf("\n\t\t\tFile is not opened\n");
+        exit(1);
+    }
+    headMessage("SEARCH PASSENGER");
+    printf("\n\n\t\t\tEnter passenger  ID NO to search:");
+    fflush(stdin);
+    scanf("%u",&passengerId);
+    while (fread (&addPassengerInfoInDataBase, sizeof(addPassengerInfoInDataBase), 1, fp))
+    {
+        if(addPassengerInfoInDataBase.passengerId == passengerId)
+        {
+            found = 1;
+            break;
+        }
+    }
+    if(found)
+    {
+        printf("\n\t\t\tPassenger id = %d\n",addPassengerInfoInDataBase.passengerId);
+        printf("\n\t\t\tPassenger name = %s\n",addPassengerInfoInDataBase.passengerName);
+        printf("\n\t\t\tPassenger Mob = %s\n",addPassengerInfoInDataBase.passengerMobNum);
+        for(i=0;i<addPassengerInfoInDataBase.total_passengers;i++)
+        {
+            printf("\n\t\t\tSeat Number of Passenger %d = %d\n",i+1,addPassengerInfoInDataBase.passengerSeatNum[i]);
+        }
+        printf("\n\t\t\tNumber of Passengers = %d\n",addPassengerInfoInDataBase.total_passengers);
+        printf("\n\t\t\tPassenger Address = %s\n",addPassengerInfoInDataBase.passengerAddr);
+        printf("\n\t\t\tPassenger Travelling Date(day/month/year) =  (%d/%d/%d)\n",addPassengerInfoInDataBase.passengerTravelingDate.dd,
+               addPassengerInfoInDataBase.passengerTravelingDate.mm, addPassengerInfoInDataBase.passengerTravelingDate.yyyy);
+    }
+    else
+    {
+        printf("\n\t\t\tNo Record");
+    }
+    fclose(fp);
+    printf("\n\n\n\t\t\tPress any key to go to main menu.....");
+    fflush(stdin);
+    getchar();
+}
+// view passenger function
+void viewPassenger()
+{
+    int found = 0,i;
+    s_PassengerInfo addPassengerInfoInDataBase = {0};
+    FILE *fp = NULL;
+    unsigned int countPassenger = 1;
+    headMessage("VIEW PASSENGER DETAILS");
+    fp = fopen(FILE_NAME,"r");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+    while (fread (&addPassengerInfoInDataBase, sizeof(addPassengerInfoInDataBase), 1, fp))
+    {
+        printf("\n\t\t\tPassenger id = %d\n",addPassengerInfoInDataBase.passengerId);
+        printf("\n\t\t\tPassenger name = %s\n",addPassengerInfoInDataBase.passengerName);
+        printf("\n\t\t\tPassenger Mob = %s\n",addPassengerInfoInDataBase.passengerMobNum);
+        printf("\n\t\t\tNumber of Passengers  = %d\n",addPassengerInfoInDataBase.total_passengers);
+        for(i=0;i<addPassengerInfoInDataBase.total_passengers;i++)
+        {
+            printf("\n\t\t\tSeat Number of Passenger %d = %d\n",i+1,addPassengerInfoInDataBase.passengerSeatNum[i]);
+        }
+        printf("\n\t\t\tPassenger Address = %s\n",addPassengerInfoInDataBase.passengerAddr);
+        printf("\n\t\t\tPassenger Travelling Date(day/month/year) =  (%d/%d/%d)\n",addPassengerInfoInDataBase.passengerTravelingDate.dd,
+               addPassengerInfoInDataBase.passengerTravelingDate.mm, addPassengerInfoInDataBase.passengerTravelingDate.yyyy);
+        found = 1;
+        ++countPassenger;
+    }
+    printf("\n\t\t\tPassenger Count = %d\n\n",countPassenger);
+    fclose(fp);
+    if(!found)
+    {
+        printf("\n\t\t\tNo Record");
+    }
+    printf("\n\n\t\t\tPress any key to go to main menu.....\n");
+    fflush(stdin);
+    getchar();
+}
+//Display menu
+void menu()
+{
+    int choice = 0;
+    do
+    {
+        headMessage("MAIN MENU");
+        printf("\n\n\n\t\t\t1.Add New passenger Record");
+        printf("\n\t\t\t2.Search passenger Record");
+        printf("\n\t\t\t3.View passenger Record");
+        printf("\n\t\t\t0.Exit");
+        printf("\n\n\n\t\t\tEnter choice => ");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+        case 1:
+            addPassengerInDataBase();
+            break;
+        case 2:
+            searchPassenger();
+            break;
+        case 3:
+            viewPassenger();
+            break;
+        case 0:
+            printf("\n\n\n\t\t\t\tThank you!!!\n\n\n\n\n");
+            exit(1);
+            break;
+        default:
+            printf("\n\n\n\t\t\tINVALID INPUT!!! Try again...");
+        }                                            //Switch Ended
+    }
+    while(choice!=0);                                        //Loop Ended
+}
+int main()
+{
+    welcomeMessage();
+    return 0;
+}
