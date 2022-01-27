@@ -4,6 +4,7 @@ A Mini project done by:
 Abilash-RA2111009010088
 Kapilashiwaa-RA2111009010088
 
+
 This project is to implement a simple bus Ticket reservation System by using Arrays, Structures, Pointers, Functions and Text files 
 
 User details along with the tickets booked are stored in a text file. The text file is then used to display the contents of old transaction records. The working of the project is explained below
