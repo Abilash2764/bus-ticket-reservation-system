@@ -22,4 +22,4 @@ Choise 3 allows the user view previous booking transactions, including all the d
 
 If the entered choise is 0 the program exits
 
-Since there are three choices present in the menu, the program works if the choice input is either ‘1’, ‘2’ or ‘3’. Any other inputted value will simply result in the menu being displayed again. 
+Since there are three choices present in the menu, the program works if the choice input is either ‘1’, ‘2’ or ‘3’. Any other inputted value will display the menu again
