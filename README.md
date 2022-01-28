@@ -2,7 +2,7 @@
 
 A Mini project done by:
 Abilash-RA2111009010088
-Kapilashiwaa-RA2111009010088
+Kapilashiwaa-RA2111009010087
 
 
 This project is to implement a simple bus Ticket reservation System by using Arrays, Structures, Pointers, Functions and Text files 
