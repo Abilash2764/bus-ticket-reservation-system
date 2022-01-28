@@ -18,7 +18,7 @@ When the user enters the choice 1 it allows him/her to create a new record and l
 
 When a user chooses option 2, he/she will be able to search for any previous records including all the details entered
 
-Choise 3 allows the user view previous booking transactions, including all the details entered from text file
+Choice 3 allows the user view previous booking transactions, including all the details entered from text file
 
 If the entered choise is 0 the program exits
 
