@@ -81,7 +81,6 @@ void headMessage(const char *message)
 //Display message
 void welcomeMessage()
 {
-    headMessage("www.aticleworld.com");
     printf("\n\n\n\n\n");
     printf("\n\t\t\t        =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     printf("\n\t\t\t        =                  WELCOME                  =");
